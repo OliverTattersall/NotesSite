@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import TodoSerializer
-from .models import Note
+from .serializers import NoteSerializer, NotebookSerializer
+from .models import Note, Notebook
 
 # Create your views here.
 
 class NoteView(viewsets.ModelViewSet):
-    serializer_class = TodoSerializer
+    serializer_class = NoteSerializer
     queryset = Note.objects.all()
+
+class NotebookView(viewsets.ModelViewSet):
+    serializer_class = NotebookSerializer
+    queryset = Notebook.objects.all()
 

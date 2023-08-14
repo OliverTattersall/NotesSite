@@ -21,6 +21,7 @@ from notesApi import views
 
 router = routers.DefaultRouter()
 router.register(r'notes', views.NoteView, 'note')
+router.register(r'notebooks', views.NotebookView, 'notebook')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

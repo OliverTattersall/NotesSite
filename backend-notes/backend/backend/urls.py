@@ -21,9 +21,16 @@ from notesApi import views
 
 router = routers.DefaultRouter()
 router.register(r'notes', views.NoteView, 'note')
-router.register(r'notebooks', views.NotebookView, 'notebook')
+router.register(r'notebooks', views.NotebooksView, 'notebook')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls')),
+    path('api/user/register/', views.UserRegistrationAPIView.as_view()),
+    path('api/user/login/', views.UserLoginAPIView.as_view()),
+    path('api/user/', views.UserViewAPI.as_view()),
+    path('api/user/logout/', views.UserLogoutViewAPI.as_view()),
+
+    # path('api/single_notebook/<pk>/', views.getNotebook, 'getNotebook'),
 ]

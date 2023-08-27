@@ -9,9 +9,93 @@ from rest_framework import permissions, status
 from django.core.exceptions import ValidationError
 # from .validations import custom_validation, validate_email, validate_password
 
-class NoteView(viewsets.ModelViewSet):
-	serializer_class = NoteSerializer
-	queryset = Note.objects.all()
+# class NoteView(viewsets.ModelViewSet):
+# 	serializer_class = NoteSerializer
+# 	queryset = Note.objects.all()
+
+
+def verify(notebook_id, user_id):
+
+	notebook = Notebook.objects.get(id=notebook_id)
+
+	return notebook.owner_id == user_id
+
+
+class NoteView(APIView):
+	permission_classes = (permissions.IsAuthenticated, )
+	authentication_classes = (SessionAuthentication,)
+
+	def post(self, request):
+
+		data = request.data
+		notebook_id = data['notebook']
+		uid = request.user.id
+		title = data['title']
+		descrip = data['description']
+		
+
+		print(data)
+		if(verify(notebook_id, uid)):
+			new_note = Note.objects.create(title=title, description=descrip, notebook_id=notebook_id, owner_id = uid)
+
+			new_note.save()
+			return Response('Success')
+		return Response()
+	
+	def put(self, request):
+		
+		data = request.data
+		try:
+			title = data['title']
+			descrip = data['description']
+			id = data['id']
+			book_id = data['notebook']
+			uid = request.user.id
+		except:
+			return ValidationError('Incorrect Request body')
+		
+
+		if verify(book_id, uid):
+			note = Note.objects.get(id=id)
+
+			note.title = title
+			note.description = descrip
+			note.save()
+
+		return Response()
+	
+
+	def delete(self, request):
+
+		data = request.data
+		print(data)
+		try:
+			id = data['id']
+			book_id = data['notebook']
+			uid = request.user.id
+		except:
+			return ValidationError('Incorrect Request body')
+		
+		if verify(book_id, uid):
+			note = Note.objects.get(id=id)
+			note.delete()
+			return Response('Success')
+		return Response('Failure')
+
+
+class NotebookView(APIView):
+	# serializer_class = NotebookSerializer
+	permission_classes = (permissions.IsAuthenticated, )
+	authentication_classes = (SessionAuthentication,)
+
+	def get(self, request, *args,**kwargs):
+
+		print(self.kwargs, request.user.id, kwargs)
+		notebook = NotebookSerializer(Notebook.objects.get(id=kwargs['id']))
+
+
+		return Response(notebook.data)
+
 
 class NotebooksView(APIView):
 	permission_classes = (permissions.IsAuthenticated, )
@@ -32,11 +116,24 @@ class NotebooksView(APIView):
 		return Response({"success":"yay"})
 	
 	def get(self, request):
-		# print(self.request.user)
+		print(self.kwargs, self.request, self.request.GET)
 		# print('hello')
 		# serializer_class = NotebookSerializer
 		books = [NotebookSerializer(notebook).data for notebook in Notebook.objects.all() ]
 		return Response(data=books)
+	
+	def delete(self, request):
+
+		queries = self.request.GET
+		book_id = queries['book']
+
+		uid = request.user.id
+		book = Notebook.objects.get(id = book_id)
+		print(uid, book.owner_id, uid==book.owner_id)
+		if(uid == book.owner_id):
+			book.delete()
+
+		return Response('success')
 
 class UserRegister(APIView):
 	permission_classes = (permissions.AllowAny,)

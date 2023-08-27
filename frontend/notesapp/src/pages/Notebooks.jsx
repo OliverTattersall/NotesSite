@@ -3,29 +3,30 @@ import { useQuery } from "react-query"
 import axios from "axios"
 import { useState } from "react"
 import { NewNotebookModal } from "../components/NewNotebookModal";
-import { fetchNotebooks, submitNotebook } from "../scripts/api";
+import { fetchNotebooks, getUserNotebooks, logout, submitNotebook } from "../scripts/api";
 // import ReactModal from "react-modal";
 
 
-const notebooks=[{'title':'test1', 'id':1, "notes": [
-    {
-        "id": 3,
-        "title": "Test 1",
-        "description": "Test 1"
-    },
-    {
-        "id": 4,
-        "title": "Test 2",
-        "description": "jajSDHJKAJSD"
-    }
-]}, {'title':'test2', 'id':2, "notes" : []},]
+// const notebooks=[{'title':'test1', 'id':1, "notes": [
+//     {
+//         "id": 3,
+//         "title": "Test 1",
+//         "description": "Test 1"
+//     },
+//     {
+//         "id": 4,
+//         "title": "Test 2",
+//         "description": "jajSDHJKAJSD"
+//     }
+// ]}, {'title':'test2', 'id':2, "notes" : []},]
 
 
 
 
 
 export const Notebooks = ()=>{
-    const {data, isLoading, isError} = useQuery({queryFn:fetchNotebooks})
+    // const {data, refetch} = useQuery({queryFn:fetchNotebooks})
+    const {data, refetch} = useQuery({queryFn: getUserNotebooks})
     // notebooks.map((notebook)=>{console.log(notebook); return notebook})
     // console.log(data?.data)
     const [modalOpen, setOpen] = useState(false);
@@ -37,6 +38,8 @@ export const Notebooks = ()=>{
                 <div className="">
                     <h1 className="text-center text-2xl mt-10 underline">Notebooks</h1>
                     <div className="float-right mr-8">
+                        <button onClick={logout} class="p-0 w-12 h-12 bg-red-600 rounded-full hover:bg-red-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none" type="button">Logout</button>
+
                         <p>New Notebook</p>
                         <button onClick={()=>setOpen(true)} class="p-0 w-12 h-12 bg-red-600 rounded-full hover:bg-red-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none" type="button">
                         <svg viewBox="0 0 20 20" enable-background="new 0 0 20 20" class="w-6 h-6 inline-block">
@@ -49,14 +52,14 @@ export const Notebooks = ()=>{
                 </div>
                 <div>
                     {/* {notebooks.map((notebook) => { */}
-                    {data?.data.map((notebook) =>{ 
-                            return <Notebook title={notebook.title} id={notebook.id} key={notebook.id}/>
+                    {data?.data.user.notebooks.map((notebook) =>{ 
+                            return <Notebook title={notebook.title} id={notebook.id} key={notebook.id} refetch={refetch}/>
                     })}
                 </div>
                 
             </div>
             
-            <NewNotebookModal isOpen={modalOpen} updateOpenStatus={setOpen}/>
+            <NewNotebookModal isOpen={modalOpen} updateOpenStatus={setOpen} refetch={refetch}/>
     
             
         </>

@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import { useParams } from "react-router-dom"
-import { fetchNotebook } from "../scripts/api"
+import { fetchNotebook, getNotebook } from "../scripts/api"
 import { Note } from "../components/Note";
 import { useState } from "react";
 import { NewNoteModal } from "../components/NewNoteModal";
@@ -8,7 +8,7 @@ import { NewNoteModal } from "../components/NewNoteModal";
 
 export const Notes = ()=>{
     const {id} = useParams();
-    const {data, isLoading, isError, refetch} = useQuery({queryFn: fetchNotebook, queryKey:['id',id]})
+    const {data,  refetch} = useQuery({queryFn: getNotebook, queryKey:['id',id]})
     const [openNewNoteModal, setOpen] = useState(false)
     // console.log(data?.data, data?.data.notes.slice().reverse())
 

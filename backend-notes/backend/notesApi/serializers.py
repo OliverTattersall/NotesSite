@@ -8,18 +8,18 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'notebook')
 
 class NotebookSerializer(serializers.ModelSerializer):
-    # notes = serializers.StringRelatedField(
-    #     many=True,
-    #     read_only=True
-    # )
     notes = NoteSerializer(many=True, read_only=True)
     class Meta:
         model = Notebook
         fields = ('id', 'title', 'notes')
 
+class MyKeywordsField(serializers.RelatedField):
+    def to_representation(self, value):
+        return { 'id': value.pk, 'title' : value.title }
 
 class UserSerializer(serializers.ModelSerializer):
-    notebooks = NotebookSerializer(many=True, read_only=True)
+    # notebooks = NotebookSerializer(many=True, read_only=True)
+    notebooks = MyKeywordsField(many=True, read_only=True)
     class Meta:
         model = get_user_model()
         fields = ('username', 'notebooks')

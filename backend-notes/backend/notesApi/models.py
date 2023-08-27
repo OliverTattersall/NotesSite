@@ -15,6 +15,7 @@ class Note(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     notebook = models.ForeignKey(Notebook, on_delete=models.CASCADE, related_name='notes')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='note')
 
 
     def __str__(self):

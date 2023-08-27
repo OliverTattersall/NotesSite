@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "react-modal";
-import { editNote, submitNote } from "../scripts/api";
+import { newNotebook, submitNote } from "../scripts/api";
 
 
 const styles={

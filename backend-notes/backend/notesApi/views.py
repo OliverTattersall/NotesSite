@@ -25,6 +25,12 @@ class NotebooksView(viewsets.ModelViewSet):
     serializer_class = NotebookSerializer
     queryset = Notebook.objects.all()
 
+class NoteAPIView(APIView):
+
+    # def put(self, request)
+
+    print()
+
 class UserRegistrationAPIView(APIView):
     serializer_class = UserRegistrationSerializer
     authentication_classes = (TokenAuthentication,)
@@ -85,16 +91,24 @@ class UserViewAPI(APIView):
 
     def get(self, request):
         user_token = request.COOKIES.get('access_token')
-
+        print(request.COOKIES)
         if not user_token:
             raise AuthenticationFailed('Unauthenticated user.')
 
         payload = jwt.decode(user_token, settings.SECRET_KEY, algorithms=['HS256'])
 
         user_model = get_user_model()
-        user = user_model.objects.filter(id=payload['user_id']).first()
+        user = user_model.objects.get(id=payload['user_id'])
         user_serializer = UserSerializer(user)
         return Response(user_serializer.data)
+    
+class UserNotebookViewAPI(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (AllowAny, )
+    lookup_url_kwarg = "notebook_id"
+
+    def get(self, request):
+        notebook_id = self.kwargs.get(self.lookup_url_kwarg)
     
 class UserLogoutViewAPI(APIView):
     authentication_classes = (TokenAuthentication,)

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "react-modal";
-import { submitNotebook } from "../scripts/api";
+import { newNotebook, submitNotebook } from "../scripts/api";
 
 const styles = {
     content: {
@@ -13,9 +13,17 @@ const styles = {
       },
 }
 
-export const NewNotebookModal = ({isOpen, updateOpenStatus}) =>{
+export const NewNotebookModal = ({isOpen, updateOpenStatus, refetch}) =>{
     
     const [title, updateTitle] = useState('');
+
+    const handleSubmit = () => {
+        const submitPromise = newNotebook(title)
+        submitPromise.then(() => {
+            updateOpenStatus(false)
+            refetch();
+        })
+    }
 
     return (
         <>
@@ -39,7 +47,7 @@ export const NewNotebookModal = ({isOpen, updateOpenStatus}) =>{
                     <button 
                     className="mt-4 shadow bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
                     type="button"
-                    onClick={submitNotebook(title)}
+                    onClick={handleSubmit}
                     >Submit</button>
                 </div>
             </Modal>

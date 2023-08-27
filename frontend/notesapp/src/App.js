@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Notebooks } from './pages/Notebooks';
 import { Notes } from './pages/Notes';
-import { Login } from './pages/Login';
+import { Auth } from './pages/Auth';
 
 
 function App() {
@@ -11,9 +11,9 @@ function App() {
     <>
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Notebooks />} />
-        <Route path='/:id' element={<Notes />} />
-        <Route path='/login' element={<Login />} />
+        <Route path='/notebooks/' element={<Notebooks />} />
+        <Route path='/notebook/:id' element={<Notes />} />
+        <Route path='/auth' element={<Auth />} />
       </Routes>
     </BrowserRouter>
 

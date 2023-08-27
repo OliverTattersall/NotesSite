@@ -30,7 +30,7 @@ export const NoteModal = ({isOpen, updateOpenStatus, title, content, notebookId,
     }
 
     const handleDelete = () => {
-        const deletePromise = deleteNote(noteId);
+        const deletePromise = deleteNote(noteId, notebookId);
         deletePromise.then(()=>{
             updateOpenStatus(false)
             refetch();

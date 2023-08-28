@@ -1,16 +1,24 @@
 import { useQuery } from "react-query"
-import { useParams } from "react-router-dom"
-import { fetchNotebook, getNotebook } from "../scripts/api"
+import { useNavigate, useParams } from "react-router-dom"
+import { getNotebook } from "../scripts/api"
 import { Note } from "../components/Note";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewNoteModal } from "../components/NewNoteModal";
 
 
 export const Notes = ()=>{
+    const navigate = useNavigate()
     const {id} = useParams();
-    const {data,  refetch} = useQuery({queryFn: getNotebook, queryKey:['id',id]})
+    const {data,  refetch, error, isError} = useQuery({queryFn: getNotebook, queryKey:['id',id], retry:1})
     const [openNewNoteModal, setOpen] = useState(false)
     // console.log(data?.data, data?.data.notes.slice().reverse())
+
+    useEffect(()=>{
+        console.log(error, isError)
+        if(error?.response.status === 403){
+            navigate('/auth/')
+        }
+    }, [isError, error])
 
     const cleanContent = (content) => {
         if(content.length > 250){

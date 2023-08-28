@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Login, getNotebook, getUser, getUserNotebooks, login } from "../scripts/api";
+import { Login, getNotebook, getUser, getUserNotebooks, login, logout, register } from "../scripts/api";
+import { useNavigate } from "react-router-dom";
 
 export const Login_Register = () => {
 
     const [username, updateUsername] = useState('')
     const [password, updatePassword] = useState('')
+    const navigate = useNavigate()
 
     const handleChange = (updater) => (e) => {
         updater(e.target.value)
@@ -15,8 +17,21 @@ export const Login_Register = () => {
         console.log(password)
         login(username, password).then((data)=>{
             console.log(data)
+            navigate('/notebooks/')
+        }).catch((err)=>{
+            alert(err)
         })
     }
+
+    const handleRegister = () => {
+        register(username, password).then((data)=>{
+            handleLogin()
+            // navigate('/notebooks/')
+        }).catch((err)=>{
+            alert(err)
+        })
+    }
+
 
     const testFetch = () => {
         const dataPromise = getUserNotebooks();
@@ -64,15 +79,20 @@ export const Login_Register = () => {
                             onClick={handleLogin} 
                             className="w-full mt-4 text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                             >Sign in</button>
-                            <button type="submit" 
+                            <button type="submit"
+                            onClick={handleRegister} 
                             className="w-full mt-4 text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                             >Register</button>
+                            <button type="submit"
+                            onClick={logout} 
+                            className="w-full mt-4 text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >Having issues? Try clicking here to clear stale cookies and try again. </button>
 
                         </div>
                     </div>
                 </div>
             </div>
-            <button className="w-2/3 bg-blue-500" onClick={testFetch}>Fetch Data</button>
+            {/* <button className="w-2/3 bg-blue-500" onClick={testFetch}>Fetch Data</button> */}
             </section>
     );
 }

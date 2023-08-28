@@ -55,6 +55,14 @@ export const login = async (username, password) => {
         })
 }
 
+export const register = async (username, password) => {
+    return await client.post("/api/register", {
+        username: username,
+        password: password
+    })
+}
+
+
 export const logout = async () => {
     return await client.post('/api/logout')
 }
